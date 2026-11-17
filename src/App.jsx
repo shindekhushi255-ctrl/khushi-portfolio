@@ -1,396 +1,640 @@
 import './App.css';
+import { useState, useEffect } from 'react';
 function App() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+const [scrollProgress, setScrollProgress] = useState(0);
+const [showTopButton, setShowTopButton] = useState(false);
+
+useEffect(() => {
+  const handleScroll = () => {
+    const scrollTop = window.scrollY;
+    const scrollHeight =
+      document.documentElement.scrollHeight - window.innerHeight;
+
+    setScrollProgress(
+      scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0
+    );
+
+    setShowTopButton(scrollTop > 300);
+  };
+
+  window.addEventListener('scroll', handleScroll);
+  handleScroll();
+
+  return () => window.removeEventListener('scroll', handleScroll);
+}, []);
+
+
+useEffect(() => {
+  const elements = document.querySelectorAll(
+    '.about-heading, .about-content, .skills-heading, .skills-container, .projects-heading, .projects-container, .experience-card, .contact-container'
+  );
+
+  elements.forEach((element) => {
+    element.classList.add('reveal');
+  });
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+  entry.target.classList.add('reveal-visible');
+} else {
+  entry.target.classList.remove('reveal-visible');
+}
+      });
+    },
+    {
+      threshold: 0.15
+    }
+  );
+
+  elements.forEach((element) => observer.observe(element));
+
+  return () => observer.disconnect();
+}, []);
+
   return (
     <div className="portfolio">
+      <div
+  className="scroll-progress"
+  style={{ width: `${scrollProgress}%` }}
+></div>
 
-      {/* Navbar */}
-      <nav className="navbar">
-        <h2 className="logo">Khushi.</h2>
+      
+{/* Navbar */}
+<nav className="navbar">
+  <a href="#home" className="logo">
+    Khushi<span>.</span>
+  </a>
 
-        <div className="nav-links">
-          <a href="#home">Home</a>
-          <a href="#about">About</a>
-          <a href="#skills">Skills</a>
-          <a href="#projects">Projects</a>
-          <a href="#experience">Experience</a>
-          <a href="#contact">Contact</a>
-        </div>
+  <button
+    className="menu-toggle"
+    onClick={() => setMenuOpen(!menuOpen)}
+    aria-label="Toggle navigation"
+    aria-expanded={menuOpen}
+  >
+    {menuOpen ? "✕" : "☰"}
+  </button>
 
-        <a href="#contact" className="nav-button">Let's Talk</a>
-      </nav>
+  <div className={`nav-links ${menuOpen ? "active" : ""}`}>
+    {["Home", "About", "Skills", "Projects", "Experience", "Contact"].map((item) => (
+      <a
+        key={item}
+        href={`#${item.toLowerCase()}`}
+        onClick={() => setMenuOpen(false)}
+      >
+        {item}
+      </a>
+    ))}
+  </div>
 
-      {/* Home Section */}
-      <section className="hero" id="home">
+  <a href="#contact" className="nav-button">
+    Let's Talk ↗
+  </a>
+</nav>
 
-        <div className="hero-content">
-          <p className="intro">HELLO, I'M KHUSHI 👋</p>
 
-          <h1>
-            Aspiring Web
-            <br />
-            <span>Developer.</span>
-          </h1>
+  
+      
+{/* Home Section */}
 
-          <p className="description">
-            I am a BCA student passionate about creating
-            beautiful and user-friendly websites.
-          </p>
+{/* HOME / HERO SECTION */}
 
-          <a href="#projects" className="hero-button">
-          Explore My Work →
-          </a>
-         
-        </div>
+<section className="hero hero-editorial" id="home">
 
-        <div className="hero-image">
-          <div className="image-placeholder">
-  <img src="/khushi.jpg.jpeg" alt="Khushi" />
+  <div className="hero-content">
+
+    <p className="hero-eyebrow">
+      <span className="status-dot"></span>
+      HELLO, I'M KHUSHI SHINDE
+    </p>
+
+    <h1 className="editorial-title">
+  Aspiring
+  <br />
+  <span>Web Developer</span>
+  <br />
+  <i>Creating Ideas.</i>
+</h1>
+
+    <p className="description">
+      I create beautiful and user-friendly digital experiences.
+      Currently pursuing my BCA and exploring the world of
+      React.js, Next.js and modern web development.
+    </p>
+
+    <div className="hero-buttons">
+
+      <a href="#projects" className="hero-button">
+        Explore My Work ↗
+      </a>
+
+      <a href="#contact" className="hero-secondary-button">
+        Let's Connect
+      </a>
+
+    </div>
+
+    <div className="hero-bottom-info">
+      <span>BASED IN SURAT, INDIA</span>
+      <span>WEB DEVELOPER INTERN</span>
+    </div>
+
+  </div>
+
+  <div className="hero-image editorial-image">
+
+    <div className="image-placeholder">
+      <img src="/khushi.jpg.jpeg" alt="Khushi Shinde" />
+    </div>
+
+    <div className="floating-card">
+      <span>✳</span>
+      <p>Learning. Creating. Growing.</p>
+    </div>
+
+    <p className="hero-image-caption">
+      Turning ideas into digital experiences.
+    </p>
+
+  </div>
+
+</section>
+
+{/* MOVING TEXT */}
+
+<div className="marquee">
+  <div className="marquee-track">
+    <span>DESIGN ✳ DEVELOP ✳ CREATE ✳ EXPLORE ✳ </span>
+    <span>DESIGN ✳ DEVELOP ✳ CREATE ✳ EXPLORE ✳ </span>
+  </div>
 </div>
-          <p>Creative Mind. Growing Developer.</p>
-          <div className="tech-badges">
-  <span>HTML</span>
-  <span>CSS</span>
-  <span>JavaScript</span>
-  <span>React.js</span>
-  <span>Next.js</span>
-</div>
-        </div>
 
-      </section>
-           
-      {/* About Section */}
 
-      <section className="about" id="about">
+      
+{/* About Section */}
 
-        <div className="about-heading">
-          <p className="section-tag">GET TO KNOW ME</p>
-          <h2>About <span>Me</span></h2>
-        </div>
+<section className="about" id="about">
 
-        <div className="about-content">
+  <div className="about-heading">
+    <p className="section-tag">GET TO KNOW ME</p>
+    <h2>A Little About <span>Me</span></h2>
+    <p className="about-subtitle">
+      My journey, education and passion for web development.
+    </p>
+  </div>
 
-          <div className="about-text">
-            <h3>Hello! I'm Khushi Shinde.</h3>
+  <div className="about-content">
 
-            <p>
-              I am a Web Developer passionate about creating
-              beautiful and responsive websites that are easy
-              to use and provide a great experience across all devices.
-            </p>
-          </div>
+    <div className="about-text">
+      <p className="about-label">WHO I AM</p>
 
-          <div className="about-details">
+      <h3>Hello! I'm Khushi Shinde.</h3>
 
-            <div className="detail-card">
-              <h4>Education</h4>
-              <p>BCA – Final Year, Vanita Vishram Women's University</p>
-            </div>
+      <p>
+        I am a BCA Final Year student and an aspiring web developer
+        who enjoys turning ideas into beautiful and functional websites.
+      </p>
 
-            <div className="detail-card">
-              <h4>Current Role</h4>
-              <p>Website Developer Intern</p>
-            </div>
+      <p>
+        I love learning new technologies and improving my frontend
+        development skills. My goal is to create responsive websites
+        that are simple, attractive and easy to use.
+      </p>
 
-            <div className="detail-card">
-              <h4>Currently Learning</h4>
-              <p>React.js & Next.js</p>
-            </div>
+      <a href="#contact" className="about-button">
+        Let's Connect →
+      </a>
+    </div>
 
-            <div className="detail-card">
-              <h4>Interest</h4>
-              <p>UI Design & Frontend Development</p>
-            </div>
+    <div className="about-details">
 
-          </div>
+      <div className="detail-card">
+        <span>01</span>
+        <h4>Education</h4>
+        <p>BCA Final Year</p>
+        <small>Vanita Vishram Women's University</small>
+      </div>
 
-        </div>
+      <div className="detail-card">
+        <span>02</span>
+        <h4>Current Role</h4>
+        <p>Website Developer Intern</p>
+        <small>DesignPav</small>
+      </div>
 
-      </section>
+      <div className="detail-card">
+        <span>03</span>
+        <h4>Currently Learning</h4>
+        <p>React.js & Next.js</p>
+        <small>Frontend Development</small>
+      </div>
+
+      <div className="detail-card">
+        <span>04</span>
+        <h4>My Interests</h4>
+        <p>UI Design & Frontend</p>
+        <small>Creative Web Experiences</small>
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
 
       {/* Skills Section */}
 
-      <section className="skills" id="skills">
+{/* Skills Section */}
 
-        <div className="skills-heading">
-          <p className="section-tag">WHAT I WORK WITH</p>
-          <h2>My <span>Skills</span></h2>
-          <p className="skills-subtitle">
-            Technologies and tools I use and continue to explore.
-          </p>
-        </div>
+{/* Skills Section */}
+<section className="skills" id="skills">
 
-        <div className="skills-container">
+  <div className="skills-heading">
+    <p className="section-tag">MY KNOWLEDGE & TOOLKIT</p>
+    <h2>Things I <span>Work With.</span></h2>
+    <p>A collection of technologies and tools I have explored through learning and practical projects.</p>
+  </div>
 
-          <div className="skill-card">
-            <div className="skill-icon">01</div>
-            <h3>Frontend Development</h3>
-            <p>Building responsive and interactive user interfaces.</p>
-            <div className="skill-tags">
-              <span>HTML</span>
-              <span>CSS</span>
-              <span>JavaScript</span>
-              <span>React.js</span>
-              <span>Next.js</span>
-            </div>
-          </div>
+  <div className="skills-container">
 
-          <div className="skill-card">
-            <div className="skill-icon">02</div>
-            <h3>Programming</h3>
-            <p>Programming concepts and logical problem solving.</p>
-            <div className="skill-tags">
-              <span>Python</span>
-              <span>PHP</span>
-            </div>
-          </div>
+    {/* Frontend */}
+    <div className="skill-card skill-featured">
+      <div className="skill-top">
+        <span className="skill-number">01</span>
+        <span className="skill-label">WEB DEVELOPMENT</span>
+      </div>
+      <h3>Frontend Development</h3>
+      <p>Building web pages, creating responsive layouts and exploring modern frontend technologies.</p>
+      <div className="skill-tags">
+        <span>HTML</span>
+        <span>CSS</span>
+        <span>JavaScript</span>
+        <span>React.js</span>
+        <span>Next.js</span>
+        <span>Bootstrap</span>
+      </div>
+      <div className="skill-card-mark">01</div>
+    </div>
 
-          <div className="skill-card">
-            <div className="skill-icon">03</div>
-            <h3>Database</h3>
-            <p>Database concepts and data management.</p>
-            <div className="skill-tags">
-              <span>SQL</span>
-              <span>MySQL</span>
-            </div>
-          </div>
+    {/* Programming */}
+    <div className="skill-card">
+      <div className="skill-top">
+        <span className="skill-number">02</span>
+        <span className="skill-label">CODING</span>
+      </div>
+      <h3>Programming</h3>
+      <p>Exploring programming concepts and building a foundation in different languages.</p>
+      <div className="skill-tags">
+        <span>Python</span>
+        <span>PHP</span>
+        <span>C</span>
+        <span>Java</span>
+        <span>ASP.NET</span>
+      </div>
+    </div>
 
-        </div>
+    {/* Database */}
+    <div className="skill-card">
+      <div className="skill-top">
+        <span className="skill-number">03</span>
+        <span className="skill-label">DATA</span>
+      </div>
+      <h3>Database Management</h3>
+      <p>Understanding database concepts, relational structures and working with databases.</p>
+      <div className="skill-tags">
+        <span>DBMS</span>
+        <span>RDBMS</span>
+        <span>SQL</span>
+        <span>MySQL</span>
+      </div>
+    </div>
 
-      </section>
+    {/* Tools */}
+    <div className="skill-card skill-tools">
+      <div className="skill-top">
+        <span className="skill-number">04</span>
+        <span className="skill-label">MY WORKSPACE</span>
+      </div>
+      <h3>Tools & Platforms</h3>
+      <p>Tools I use while developing, managing and deploying my projects.</p>
+      <div className="skill-tags">
+        <span>VS Code</span>
+        <span>GitHub</span>
+        <span>npm</span>
+        <span>Vercel</span>
+      </div>
+    </div>
 
+  </div>
+</section>
+
+
+    
       {/* Projects Section */}
 
-      <section className="projects" id="projects">
+{/* Projects Section */}
+<section className="projects" id="projects">
 
-        <div className="projects-heading">
-          <p className="section-tag">MY RECENT WORK</p>
-          <h2>Featured <span>Projects</span></h2>
-          <p className="projects-subtitle">
-            A collection of projects I have worked on while learning and exploring web development.
-          </p>
+  <div className="editorial-project-heading">
+    <p className="section-tag">A SELECTION OF MY WORK — 2026</p>
+    <h2>Made with curiosity.<br />
+      <span>Built with creativity.</span>
+    </h2>
+    <p>Some of the projects I have explored and developed during my learning journey.</p>
+  </div>
+
+  <div className="project-showcase">
+
+    {/* LearnHub */}
+    <article className="showcase-item">
+      <div className="showcase-image">
+        <img src="/learn.png.png" alt="LearnHub website" />
+        <span>01</span>
+      </div>
+
+      <div className="showcase-content">
+        <p className="showcase-category">LEARNING PLATFORM / 2026</p>
+        <h3>LearnHub<span>.</span></h3>
+        <p className="showcase-description">
+          An online learning landing page featuring course cards,
+          navigation and a clean user-friendly layout.
+        </p>
+        <div className="showcase-tags">
+          <span>React.js</span>
+          <span>HTML</span>
+          <span>CSS</span>
         </div>
-
-        <div className="projects-container">
-
-          
-{/* Project 1 */}
-
-<div className="project-card">
-  <div className="project-top">
-    <span>01</span>
-    <span className="project-type">React.js</span>
-  </div>
-
-  <h3>LearnHub</h3>
-
-  <p>
-    An online learning landing page featuring course
-    cards, navigation and a clean user-friendly layout.
-  </p>
-
-  <div className="project-tags">
-    <span>React.js</span>
-    <span>CSS</span>
-    <span>HTML</span>
-  </div>
-
-  <div className="project-actions">
-    <a href="https://myapp1-project-22bp.vercel.app/" className="project-link">View Project ↗</a>
-    <a href="https://github.com/shindekhushi255-ctrl/myapp" className="project-link">View Code ↗</a>
-  </div>
-</div>
-
-
-          
-{/* Project 2 */}
-
-<div className="project-card">
-  <div className="project-top">
-    <span>02</span>
-    <span className="project-type">React.js</span>
-  </div>
-
-  <h3>WanderIndia</h3>
-
-  <p>
-    A travel website with multiple pages, destination
-    details and navigation using React Router.
-  </p>
-
-  <div className="project-tags">
-    <span>React.js</span>
-    <span>React Router</span>
-    <span>CSS</span>
-  </div>
-
-  <div className="project-actions">
-    <a href="https://wander-india-two.vercel.app/" className="project-link">View Project ↗</a>
-    <a href="https://github.com/shindekhushi255-ctrl/WanderIndia" className="project-link">View Code ↗</a>
-  </div>
-</div>
-
-
-          {/* Project 3 */}
-
-<div className="project-card">
-  <div className="project-top">
-    <span>03</span>
-    <span className="project-type">React.js</span>
-  </div>
-
-  <h3>Fashion Card App</h3>
-
-  <p>
-    A fashion shopping interface featuring reusable
-    product cards, dynamic content and Add to Cart
-    functionality using React.
-  </p>
-
-  <div className="project-tags">
-    <span>React.js</span>
-    <span>Props</span>
-    <span>CSS</span>
-  </div>
-
-  <div className="project-actions">
-    <a href="https://fashion-card-app.vercel.app/" className="project-link">View Project ↗</a>
-    <a href="https://github.com/shindekhushi255-ctrl/fashion-card-app" className="project-link">View Code ↗</a>
-  </div>
-  </div>
-
+        <div className="showcase-links">
+          <a href="https://myapp1-project-22bp.vercel.app/" target="_blank" rel="noreferrer">Explore Project ↗</a>
+          <a href="https://github.com/shindekhushi255-ctrl/myapp" target="_blank" rel="noreferrer">GitHub ↗</a>
         </div>
-      </section>
+      </div>
+    </article>
+
+    {/* WanderIndia */}
+    <article className="showcase-item reverse">
+      <div className="showcase-image">
+        <img src="/wanderindia.png.png" alt="WanderIndia website" />
+        <span>02</span>
+      </div>
+
+      <div className="showcase-content">
+        <p className="showcase-category">TRAVEL WEBSITE / 2026</p>
+        <h3>WanderIndia<span>.</span></h3>
+        <p className="showcase-description">
+          A travel website showcasing destinations with multiple
+          pages and smooth navigation using React Router.
+        </p>
+        <div className="showcase-tags">
+          <span>React.js</span>
+          <span>React Router</span>
+          <span>CSS</span>
+        </div>
+        <div className="showcase-links">
+          <a href="https://wander-india-two.vercel.app/" target="_blank" rel="noreferrer">Explore Project ↗</a>
+          <a href="https://github.com/shindekhushi255-ctrl/WanderIndia" target="_blank" rel="noreferrer">GitHub ↗</a>
+        </div>
+      </div>
+    </article>
+
+    {/* Fashion Card App */}
+    <article className="showcase-item">
+      <div className="showcase-image">
+        <img src="/fashion.png.png" alt="Fashion Card App" />
+        <span>03</span>
+      </div>
+
+      <div className="showcase-content">
+        <p className="showcase-category">SHOPPING INTERFACE / 2026</p>
+        <h3>Fashion Card App<span>.</span></h3>
+        <p className="showcase-description">
+          A fashion shopping interface featuring reusable product
+          cards, dynamic content and Add to Cart functionality.
+        </p>
+        <div className="showcase-tags">
+          <span>React.js</span>
+          <span>Props</span>
+          <span>CSS</span>
+        </div>
+        <div className="showcase-links">
+          <a href="https://fashion-card-app.vercel.app/" target="_blank" rel="noreferrer">Explore Project ↗</a>
+          <a href="https://github.com/shindekhushi255-ctrl/fashion-card-app" target="_blank" rel="noreferrer">GitHub ↗</a>
+        </div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+      
 
       {/* Experience Section */}
 
-      <section className="experience" id="experience">
+      
+{/* Experience Section */}
 
-        <div className="experience-heading">
-          <p className="section-tag">MY JOURNEY</p>
-          <h2>Internship <span>Experience</span></h2>
-          <p className="experience-subtitle">
-            Learning, exploring and growing through practical experience.
-          </p>
+<section className="experience" id="experience">
+
+  <div className="experience-heading">
+    <p className="section-tag">MY JOURNEY</p>
+    <h2>Internship <span>Experience</span></h2>
+    <p className="experience-subtitle">
+      Learning, exploring and growing through practical experience.
+    </p>
+  </div>
+
+  <div className="experience-card">
+
+    <div className="experience-card-top">
+      <div className="experience-company">
+        <span className="experience-symbol">D.</span>
+        <div>
+          <p className="experience-type">MY FIRST INTERNSHIP</p>
+          <h3>DesignPav</h3>
         </div>
+      </div>
 
-        <div className="experience-card">
+      <span className="experience-date">
+        26 Oct — 30 Nov, 2026
+      </span>
+    </div>
 
-          <div className="experience-top">
-            <div>
-              <h3>Website Developer Intern</h3>
-              <h4>DesignPav</h4>
-            </div>
+    <div className="experience-divider"></div>
 
-            <span className="experience-date">
-              Oct 2026 – Present
-            </span>
-          </div>
+    <div className="experience-role">
+      <div>
+        <h4>Website Developer Intern</h4>
+        <p>
+          Exploring modern web technologies and building practical
+          projects while improving my frontend development skills.
+        </p>
+      </div>
+      <span className="experience-arrow">↗</span>
+    </div>
 
-          <p className="experience-description">
-            Currently working as a Website Developer Intern,
-            learning modern web development technologies and
-            building practical projects. Exploring React.js and
-            Next.js while improving my frontend development skills.
-          </p>
+    <div className="experience-tags">
+      <span>React.js</span>
+      <span>Next.js</span>
+      <span>GitHub</span>
+      <span>Vercel</span>
+      <span>Frontend Development</span>
+    </div>
 
-          <div className="experience-tags">
-            <span>React.js</span>
-            <span>Next.js</span>
-            <span>GitHub</span>
-            <span>Vercel</span>
-            <span>Frontend Development</span>
-          </div>
+    <div className="experience-bottom">
+      <span>LEARNING THROUGH PRACTICE</span>
+      <span>01 / EXPERIENCE</span>
+    </div>
 
-        </div>
+  </div>
 
-      </section>
+</section>
+
 
       {/* Contact Section */}
 
-      <section className="contact" id="contact">
+      
+{/* Contact Section */}
 
-        <div className="contact-heading">
-          <p className="section-tag">GET IN TOUCH</p>
-          <h2>Let's Work <span>Together</span></h2>
-          <p>
-            Have a project or an opportunity in mind?
-            I'd love to hear from you!
-          </p>
-        </div>
+<section className="contact" id="contact">
 
-        <div className="contact-container">
+  <div className="contact-heading">
+    <p className="section-tag">GET IN TOUCH</p>
+    <h2>Let's Start a <span>Conversation.</span></h2>
+    <p>
+      Have an opportunity, an idea or just want to say hello?
+      My inbox is always open.
+    </p>
+  </div>
 
-          <div className="contact-info">
-            <h3>Let's Connect</h3>
-            <p>
-              I am always excited to learn new things,
-              explore opportunities and connect with people.
-            </p>
+  <div className="contact-container">
 
-            <div className="contact-detail">
-  <span>Email</span>
-  <p>
-    <a href="mailto:shindekhushi255@gmail.com">
-      shindekhushi255@gmail.com
-    </a>
-  </p>
-</div>
+    <div className="contact-info">
+      <span className="contact-small-title">CONTACT DETAILS</span>
+      <h3>Let's make something <span>meaningful.</span></h3>
 
-            <div className="contact-detail">
-              <span>Location</span>
-              <p>Surat, Gujarat, India</p>
-            </div>
-          </div>
+      <p className="contact-intro">
+        I am always excited to learn, collaborate and explore
+        new opportunities in web development.
+      </p>
 
-          <form className="contact-form"
-            onSubmit={(e) => {
-              e.preventDefault();
-              alert("Thank you for contacting me!");
-              e.target.reset();
-            }}>
+      <div className="contact-detail">
+        <span>EMAIL ADDRESS</span>
+        <p>
+          <a href="mailto:shindekhushi255@gmail.com">
+            shindekhushi255@gmail.com
+          </a>
+        </p>
+      </div>
 
-            <input type="text" placeholder="Your Name" required />
+      <div className="contact-detail">
+        <span>LOCATION</span>
+        <p>Surat, Gujarat, India</p>
+      </div>
 
-            <input type="email" placeholder="Your Email" required />
+      <div className="contact-note">
+        <span className="contact-note-dot"></span>
+        Open to learning & opportunities
+      </div>
+    </div>
 
-            <input type="text" placeholder="Subject" required />
+    <form
+      className="contact-form"
+      onSubmit={(e) => {
+        e.preventDefault();
+        alert("Thank you for contacting me!");
+        e.target.reset();
+      }}
+    >
 
-            <textarea placeholder="Your Message" rows="5" required />
+      <div className="form-heading">
+        <span>01 — SAY HELLO</span>
+        <h3>Send me a message</h3>
+      </div>
 
-            <button type="submit">Send Message</button>
+      <label>Your Name</label>
+      <input type="text" placeholder="Enter your name" required />
 
-          </form>
+      <label>Your Email</label>
+      <input type="email" placeholder="Enter your email" required />
 
-        </div>
+      <label>Subject</label>
+      <input type="text" placeholder="What is this about?" required />
 
-      </section>
+      <label>Your Message</label>
+      <textarea placeholder="Write your message here..." rows="4" required />
+
+      <button type="submit">
+        Send Message <span>↗</span>
+      </button>
+
+    </form>
+
+  </div>
+
+</section>
+
 
       {/* Footer Section */}
 
-      <footer className="footer">
-        <h2>Khushi.</h2>
+{/* Footer */}
 
-        <p>Creating beautiful experiences through code.</p>
+<footer className="footer">
 
-        <div className="footer-links">
-  <a href="#home">Home</a>
-  <a href="#about">About</a>
-  <a href="#projects">Projects</a>
-  <a href="#contact">Contact</a>
+  <div className="footer-top">
+    <div className="footer-brand">
+      <a href="#home" className="footer-logo">Khushi<span>.</span></a>
+      <p>Turning ideas into meaningful digital experiences.</p>
+    </div>
 
-  <a
-    href="https://github.com/shindekhushi255-ctrl"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    GitHub
-  </a>
-</div>
+    <div className="footer-message">
+      <p>HAVE A GOOD IDEA?</p>
+      <a href="#contact">Let's create something together <span>↗</span></a>
+    </div>
+  </div>
 
-        <div className="footer-bottom">
-          <p>© 2026 Khushi Shinde. All Rights Reserved.</p>
-        </div>
-      </footer>
+  <div className="footer-line"></div>
+
+  <div className="footer-middle">
+    <div className="footer-nav">
+      <a href="#home">Home</a>
+      <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#projects">Projects</a>
+      <a href="#experience">Experience</a>
+      <a href="#contact">Contact</a>
+    </div>
+
+    <div className="footer-social">
+      <a href="https://github.com/shindekhushi255-ctrl" target="_blank" rel="noreferrer">GitHub ↗</a>
+      <a href="mailto:shindekhushi255@gmail.com">Email ↗</a>
+    </div>
+  </div>
+
+  <div className="footer-bottom">
+    <p>© 2026 Khushi Shinde. All rights reserved.</p>
+    <a href="#home">BACK TO TOP ↑</a>
+  </div>
+
+</footer>
+
+     
+            {showTopButton && (
+        <button
+          className="back-to-top"
+          onClick={() =>
+            window.scrollTo({
+              top: 0,
+              behavior: 'smooth'
+            })
+          }
+        >
+          ↑
+        </button>
+      )}
 
 
 
